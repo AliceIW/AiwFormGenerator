@@ -1,0 +1,18 @@
+<form class="ng-scope ng-pristine ng-valid" name="TestForm">
+    <!-- ngRepeat: field in formParams.getFields() -->
+    <div class="ng-scope" ng-switch="" on="field.type" ng-repeat="field in formParams.getFields()">
+        <label class="ng-binding">Test</label>
+        <!-- ngIf: returnType(field.type,['text','email','hidden','file','date','color','datetime','number','password','range','tel','time','url','reset']) -->
+        <!-- ngIf: returnType(field.type,['select']) -->
+        <!-- ngIf: returnType(field.type,['button']) -->
+        <!-- ngIf: returnType(field.type,['textarea']) -->
+        <textarea class="ng-scope ng-pristine ng-valid" ng-if="returnType(field.type,['textarea'])" property="" ng-model="ngModel[field.fieldName]" update-attr=""></textarea>
+        <!-- end ngIf: returnType(field.type,['textarea']) -->
+        <!-- ngIf: returnType(field.type,['checkbox']) -->
+        <!-- ngIf: returnType(field.type,['radio']) -->
+    </div>
+    <!-- end ngRepeat: field in formParams.getFields() -->
+    <br>
+    <br>
+    [|buttons|]
+</form>
