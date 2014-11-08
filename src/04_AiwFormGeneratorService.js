@@ -16,8 +16,8 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                 }
                 return true;
             },
-            loadFieldsTemplate: function (view,callback) {
-                return  $http.get(view+'.html', {cache: $templateCache}).then(callback);
+            loadFieldsTemplate: function (view, callback) {
+                return  $http.get(view + '.html', {cache: $templateCache}).then(callback);
             },
             merge: function (obj1, obj2) {
                 for (var attrname in obj2) {
@@ -29,7 +29,7 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                 var template = formParams.getTemplate();
                 var mapObj = {
                     //"[|fields|]": fieldsTemplate,
-                   
+
                     "[|loop|]": 'ng-switch on="field.type" ng-repeat="field in formParams.getFields()"',
                     "[|transclude|]": transclude
                 };
@@ -39,8 +39,10 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                 });
                 var re = new RegExp("(\\[\\|fields\\|\\])", 'g');
                 template = template.replace(re, fieldsTemplate);
-                 var re = new RegExp("(\\[\\|label\\|\\])", 'g');
+                var re = new RegExp("(\\[\\|label\\|\\])", 'g');
                 template = template.replace(re, '{{field.label}}');
+                var re = new RegExp("(\\[\\|validation\\|\\])", 'g');
+                template = template.replace(re, formParams.validationHtml);
                 return template;
             },
             getObjectFromField: function (haystack, needle, fieldId) {

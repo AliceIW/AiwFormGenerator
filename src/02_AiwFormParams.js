@@ -10,6 +10,7 @@ aiwModule.factory('AiwFormParams', ['aiwFormGeneratorService', function (aiwFGSe
             self.properties = {};
             self.groups = {};
             self.sources = {};
+            self.validationHtml = '<span class="label {{formError[field.fieldName].class}}" ng-show="formError[field.fieldName].error || formError[field.fieldName].show " >{{formError[field.fieldName].message}} </span>';
             self.validationClass = 'alert';
             self.validationMessage = {
                 string: {notAString: 'is not a string!', tooShort: 'is too short!', tooLong: 'is too long!', class: 'label-important'},
@@ -94,7 +95,12 @@ aiwModule.factory('AiwFormParams', ['aiwFormGeneratorService', function (aiwFGSe
                 return  self.validationClass;
             };
             this.setValidationMessage = function (validationType, parameter, newValue) {
+                return this;
                 self.validationMessage[validationType][parameter] = newValue;
+            };
+            this.setValidationHtml = function (newValue) {
+                self.validationHtml = newValue;
+                return this;
             };
         };
         return AiwFormParams;

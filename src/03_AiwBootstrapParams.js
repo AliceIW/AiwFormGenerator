@@ -59,7 +59,7 @@ aiwModule.factory('AiwBootstrapParams',['AiwFormParams', function (AiwFormParams
             if (fieldSettings.static) {
                 fieldsProperty["typeahead"] = label+ " for obj in formParams.getAutocomplete('" + fieldSettings.source + "',ngModel." + fieldSettings.fieldName + ")";
             } else {
-                fieldsProperty["typeahead"] = label+ " for obj in execute('"+fieldSettings.source+"',"+fieldSettings.sourceParams+")";
+                fieldsProperty["typeahead"] = label+ " for obj in $ce('"+fieldSettings.source+"',"+fieldSettings.sourceParams+")";
             }
 
             AiwParams.addField(fieldSettings, fieldsProperty, groupName);

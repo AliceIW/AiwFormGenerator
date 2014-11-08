@@ -28,7 +28,7 @@ aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', 
                 $scope.$watch('ngModel', function (newValue, oldValue) {
                     angular.forEach(newValue, function (currentField, fieldName) {
                         var fieldConf = $scope.formParams.getField(fieldName);
-                        if (fieldConf.required == true) {
+                        if (fieldConf.required == true || angular.isFunction(fieldConf.required)) {
                             $scope.checkRequired(fieldConf);
                         } else if (angular.isDefined(fieldConf.validation)) {
                             $scope.validation(fieldName, fieldConf.label, currentField, fieldConf.validation);
@@ -69,10 +69,10 @@ aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', 
 
                 }
 
-                $scope.execute = function (fnName, params) {
+                $scope.$ce = function (fnName, params) {
                    return $scope.$parent[fnName](params);
                 };
-                $scope.formError = [];
+                $scope.formError = {};
                 $scope.checkRequired = function (field) {
                     var compare = field.required;
                     if (angular.isFunction(field.required)) {
@@ -140,6 +140,17 @@ aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', 
                     } else {
                         return $scope.isANumber(value.length, min, max, label, $scope.formParams.validationMessage.string);
                     }
+                };
+                 $scope.ngModel.formIsValid=function(){
+                    var isValid = true;        
+                    angular.forEach($scope.formError,function(current){
+                        console.log(current);
+                        if(current.error == true){
+                            isValid =false;
+                            return;
+                        }
+                    });
+                    return isValid;
                 };
             }
         }
