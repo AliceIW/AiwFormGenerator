@@ -28,8 +28,7 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
             replaceTagInTemplate: function (formParams, fieldsTemplate, transclude) {
                 var template = formParams.getTemplate();
                 var mapObj = {
-                    //"[|fields|]": fieldsTemplate,
-
+                    "[|fields|]": fieldsTemplate,
                     "[|loop|]": 'ng-switch on="field.type" ng-repeat="field in formParams.getFields()"',
                     "[|transclude|]": transclude
                 };
@@ -41,8 +40,8 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                 template = template.replace(re, fieldsTemplate);
                 var re = new RegExp("(\\[\\|label\\|\\])", 'g');
                 template = template.replace(re, '{{field.label}}');
-                var re = new RegExp("(\\[\\|validation\\|\\])", 'g');
-                template = template.replace(re, formParams.validationHtml);
+                //var re = new RegExp("(\\[\\|validation\\|\\])", 'g');
+                //template = template.replace(re, formParams.validationHtml);
                 return template;
             },
             getObjectFromField: function (haystack, needle, fieldId) {

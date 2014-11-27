@@ -4,8 +4,9 @@
 aiwModule.factory('AiwFormParams', ['aiwFormGeneratorService', function (aiwFGService) {
         var AiwFormParams = function (formName) {
             var self = this;
+            self.formName = formName;
             self.view = 'view/aiwFormGenerator';
-            self.privateTemplate = '<form name="' + formName + '"><div [|loop|]><label>[|label|]</label>[|fields|]</div><br/><br/>[|buttons|]</form>';
+            self.privateTemplate = '<form name="' + formName + 'Form"><div [|loop|]><label>[|label|]</label>[|fields|]</div><br/><br/>[|buttons|]</form>';
             self.fields = [];
             self.properties = {};
             self.groups = {};

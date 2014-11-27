@@ -1,121 +1,61 @@
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css"  href="assets/bootstrap-css-only/css/bootstrap.css" >
-        <style>
-            body{
-                padding-top: 60px;
+<head>
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap-css-only/css/bootstrap.css">
+    <style>
+        body {
+            padding-top: 60px;
+        }
+    </style>
+    <script src="assets/angular/angular.js"></script>
+    <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <script src="../src/01_Module.js" type="text/javascript"></script>
+    <script src="../src/02_AiwFormParams.js" type="text/javascript"></script>
+    <script src="../src/03_AiwBootstrapParams.js" type="text/javascript"></script>
+    <script src="../src/04_AiwFormGeneratorService.js" type="text/javascript"></script>
+    <script src="../src/05_UpdateAttributesDirective.js" type="text/javascript"></script>
+    <script src="../src/06_AiwFormGeneratorDirective.js" type="text/javascript"></script>
+    <script>
+        var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
+
+        app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
+
+            $scope.result = {};
+            $scope.testForm = new AiwBootstrapParams('aaa').init();
+            $scope.testForm.setTemplate('TEstForm<form name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
+                    .setView('../lib/view/aiwFormGeneratorBootstrap')
+                    .addField({type: 'text', label: 'Hello', fieldName: 'hello'}, {"ng-required":true,"name":'hello'})
+                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye'}, {});
+
+            $scope.result1 = {};
+            $scope.aaa = new AiwBootstrapParams('aas').init();
+            $scope.aaa.setTemplate('TEstForm 1<form name="aasForm"><div [|loop|]>[|label|][|fields|]</div></form>')
+                    .setView('../lib/view/aiwFormGeneratorBootstrap')
+                    .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {});
+            $scope.alert = function () {
+                alert('');
             }
-        </style>
-        <script src="assets/angular/angular.js"></script>
-        <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+            $scope.tetet = "aaaa";
+        });</script>
+</head>
+<body ng-app="myApp">
+<div ng-controller="testController">
+    {{title}}{{$directive.tetet}}
+    hello!
+    <div ng-model="result" form-params="testForm" aiw-form-generator>adasdsad</div>
+    <!--<div ng-model="result1" form-params="aaa" aiw-form-generator>adasdsad</div>-->
 
-        <script src="assets/aiwformgenerator/aiwFormGenerator-1.0.0.js" type="text/javascript"></script>
-        <script>
-            var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
-            app.factory('testExt', ['AiwBootstrapParams', function (AiwBootstrapParams) {
-                    var testExt = function (formName) {
-                        var self = this;
-                        self.init = function () {
-                            AiwParams.setValidationClass('label-important')
-                            AiwParams.setView('view/aiwFormGeneratorBootstrap');
-                            return AiwParams;
-                        };
-                        var AiwParams = new AiwBootstrapParams(formName).init();
-                        
-                        AiwParams.doodle = function(){
-                            alert('');
-                            return this;
-                        }
-                        
-                    }
-                    return testExt;
-                }]);
-            app.controller('testController', function ($scope, testExt, $http) {
-                $scope.title = "Form Generator";
-                $scope.options = [
-                    {label: 'ssss', value: '1'},
-                    {label: 'tes', value: '2'}
-                ]
-                $scope.isopen = false;
-                $scope.result = {test: [], select: "1"};
-                $scope.testForm = new testExt('TestForm').init();
-                $scope.testForm
-                        .setView('assets/aiwformgenerator/view/aiwFormGeneratorBootstrap')
-                        .setTemplate('<table><tr [|loop|]><td>[|label|]</td><td>[|fields|]</td></tr></table>[|transclude|]<br/>[|aaa|]<div class="clearfix"></div>')
-                        .addField({type: 'text', fieldName: 'input', label: 'some label', required: true}, {})
-                        .addGroup('aaa', '<label>sss:</label><div ng-switch on="field.type" ng-repeat="field in formParams.getFields(\'buttons\')">[|fields|]</div>')
-                        .addField({type: 'text', fieldName: 'sssss', label: 'sss', validation: {type: 'string', min: 10}}, {"style": "width:30px;float:left;", "ng-change": "execute('test',{aaa:'ddd'})"}, 'buttons')
-                        .addField({type: 'text', fieldName: 'ses', label: 'ss', required: true}, {"style": "width:30px;float:left;"}, 'buttons')
-                        .setSource('test', $scope.options)
-                        .addSelect({type: 'select', fieldName: 'select', label: 'ss', source: 'test'}, {"ng-change": "execute('another',{})"})
-                        .addField({type: 'button', fieldName: 'button', text: 'reset'}, {})
-                        .addField({type: 'textarea', fieldName: 'textarea', text: 'reset'}, {})
-                        .addField({type: 'radio', fieldName: 'radio', label: 'radio', source: 'ajax'}, {})
-                        .addCheckbox({fieldName: 'checkbox', label: 'checkbox', source: 'test'}, {})
-                        .addTimePicker({fieldName: 'timePicker', label: 'timePicker', required: true}, {})
-                        .addDatePicker({fieldName: 'datePicker', isOpen: $scope.isopen, label: 'DatePicker', required: true}, {})
-                        .addAutocomplete({fieldName: 'autocompletePartial', label: 'autocomplete', source: 'test'}, {"typeahead-on-select": "execute('igotu',{item:$item})"})
-                        .doodle()
-                        .addRating({fieldName: 'rating', label: 'rating', required: true}, {});
-                $scope.igotu = function (params) {
-                    console.log(params);
-                }
-                $scope.dateOptions = {
-                    formatYear: 'yy',
-                    startingDay: 1
-                };
-                $scope.another = function () {
-                    $http.get('testAjax.json').then(function (response) {
-                        $scope.testForm.setSource('ajax', response.data.autocomplete);
-                    });
-                };
-                $scope.test = function (params) {
-                    console.log(params);
-                    alert('ss');
-                }
-                $scope.dt = "";
-            });</script>
-    </head>
-    <body ng-app="myApp">
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">AIW FormGenerator</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-left">
-                        <li><a href="#">Basic Usage</a></li>
-                        <li><a href="#">BootstrapParams</a></li>
-                        <li><a href="#">FoundationParams</a></li>
-                    </ul>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Overview</a></li>
-                <li><a href="#">Reports</a></li>
-                <li><a href="#">Analytics</a></li>
-                <li><a href="#">Export</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Nav item</a></li>
-                <li><a href="">Nav item again</a></li>
-                <li><a href="">One more nav</a></li>
-                <li><a href="">Another nav item</a></li>
-                <li><a href="">More navigation</a></li>
-            </ul>
-            <ul class="nav nav-sidebar">
-                <li><a href="">Nav item again</a></li>
-                <li><a href="">One more nav</a></li>
-                <li><a href="">Another nav item</a></li>
-            </ul>
-        </div>
-        <div ng-controller="testController" class="row">
-            {{title}}
-            <div  ng-model="result" form-params="testForm" aiw-form-generator>adasdsad</div>
-            <pre>as:{{result|json}}</pre>
-        </div> 
-    </body>
+    <div class="clearfix"></div>
+    <pre>result:{{result|json}}</pre>
+    <pre>formValidation:{{aaaForm|json}}{{aaaForm.$valid}}</pre>
+
+
+    <pre>result1:{{result1|json}}</pre>
+</div>
+</body>
 </html>
