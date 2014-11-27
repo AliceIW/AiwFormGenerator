@@ -1,28 +1,22 @@
-/* 
- * @author AliceIw
- */
-aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', function (aiwFGService, $compile) {
+aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidationService', '$compile', function (aiwFGService, aiwValidation, $compile) {
     return {
         restrict: 'A',
         replace: true,
-        priority: 0,
+        priority: 10,
         link: function ($scope, element, attr) {
-            var template = null;
-            var self = this;
             var $directive = $scope.$new(true);
+            var formName = $scope[attr['formParams']].formName + 'Form';
+            var validationService = new aiwValidation($scope[attr['formParams']].validationMessage, $scope[attr['formParams']].getValidationClass());
 
             $directive.formParams = $scope[attr['formParams']];
             $directive.ngModel = $scope[attr['ngModel']];
             $directive.formError = {};
 
-            var formName = $directive.formParams.formName + 'Form';
-            $scope[formName] ={};
-            self.initNgModel = function () {
-                if (!angular.isDefined($directive.ngModel)) {
-                    $directive.ngModel = {};
-                }
+            this.initNgModel = function () {
+                $directive.ngModel = $directive.ngModel || {};
+
                 angular.forEach($directive.formParams.fields, function (fieldConf) {
-                    $scope[formName][fieldConf.fieldName] = {};
+                    //$scope[formName][fieldConf.fieldName] = {};
                     if (!angular.isDefined($directive.ngModel[fieldConf.fieldName])) {
                         if (!angular.isDefined(fieldConf.maxChoices) || fieldConf.maxChoices == 1) {
                             $directive.ngModel[fieldConf.fieldName] = '';
@@ -32,16 +26,8 @@ aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', 
                     }
                 });
             };
-            self.initNgModel();
 
-
-            $directive.returnType = function (type, value) {
-                if (value.indexOf(type) != -1) {
-                    return true;
-                }
-                return false;
-
-            }
+            this.initNgModel();
 
             aiwFGService.loadFieldsTemplate($directive.formParams.getView(), function (response) {
                 var transclude = element.html();
@@ -53,32 +39,36 @@ aiwModule.directive('aiwFormGenerator', ['aiwFormGeneratorService', '$compile', 
                 $compile(element.contents())($scope);
             });
 
-            $scope.checkRequired = function (field) {
-                var compare = field.required;
-                if (angular.isFunction(field.required)) {
-                    compare = field.required();
+            $directive.returnType = function (type, value) {
+                return aiwFGService.typeExist(value, type);
+            }
+
+            $directive.ngModel.formIsValid = function () {
+                if (!angular.isDefined($scope[formName])) {
+                    return false;
                 }
+                return $scope[formName].$valid;
+            }
 
-                if (compare && ($directive.ngModel[field.fieldName] == null || $directive.ngModel[field.fieldName].length == 0)) {
-                    if(angular.isDefined($scope[formName])) {
-                        console.log($scope[formName]);
-                        $scope[formName][field.fieldName].$setValidity(field.fieldName, false)
-                    }
-                    return;
-                }
-                $scope[formName][field.fieldName].$setValidity(field.fieldName, true)
-
-            };
-
-
-            $directive.$watch('ngModel', function (newValue, oldValue) {
+            $directive.$watch('ngModel', function (newValue) {
                 angular.forEach(newValue, function (currentField, fieldName) {
                     var fieldConf = $directive.formParams.getField(fieldName);
+
                     if (fieldConf.required == true || angular.isFunction(fieldConf.required)) {
-                        $scope.checkRequired(fieldConf);
-                    } else if (angular.isDefined(fieldConf.validation)) {
-                        //$scope.validation(fieldName, fieldConf.label, currentField, fieldConf.validation);
+                        var requiredSatisfied = validationService.checkRequired(fieldConf, $directive.ngModel[fieldName]);
+                        console.log('hihih');
+                        $scope[formName][fieldName].$setValidity(fieldName, requiredSatisfied)
                     }
+                    if (angular.isDefined(fieldConf.validation)) {
+                        var validationResult = validationService.validation(fieldName, fieldConf, currentField);
+                        $directive.formError[fieldName] = validationResult;
+                        if(angular.isDefined($scope[formName])) {
+                            console.log('im defined');
+                            $scope[formName][fieldName].$error = {"required":true}
+                        }
+
+                    }
+
                 });
             }, true);
 

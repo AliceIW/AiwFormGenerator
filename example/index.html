@@ -5,6 +5,13 @@
         body {
             padding-top: 60px;
         }
+        /*input.ng-invalid.ng-dirty {*/
+            /*background-color: #FA787E;*/
+        /*}*/
+
+        /*input.ng-valid.ng-dirty {*/
+            /*background-color: #78FA89;*/
+        /*}*/
     </style>
     <script src="assets/angular/angular.js"></script>
     <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -13,19 +20,20 @@
     <script src="../src/02_AiwFormParams.js" type="text/javascript"></script>
     <script src="../src/03_AiwBootstrapParams.js" type="text/javascript"></script>
     <script src="../src/04_AiwFormGeneratorService.js" type="text/javascript"></script>
-    <script src="../src/05_UpdateAttributesDirective.js" type="text/javascript"></script>
-    <script src="../src/06_AiwFormGeneratorDirective.js" type="text/javascript"></script>
+    <script src="../src/05_AiwValidationService.js" type="text/javascript"></script>
+    <script src="../src/06_UpdateAttributesDirective.js" type="text/javascript"></script>
+    <script src="../src/07_AiwFormGeneratorDirective.js" type="text/javascript"></script>
     <script>
         var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
 
         app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
 
-            $scope.result = {};
+            $scope.result = {gbye:'hji'};
             $scope.testForm = new AiwBootstrapParams('aaa').init();
-            $scope.testForm.setTemplate('TEstForm<form name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
+            $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
                     .setView('../lib/view/aiwFormGeneratorBootstrap')
-                    .addField({type: 'text', label: 'Hello', fieldName: 'hello'}, {"ng-required":true,"name":'hello'})
-                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye'}, {});
+                    .addField({type: 'text', label: 'Hello', fieldName: 'hello',required:true}, {"ng-required":true,"name":'hello'})
+                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye',validation:{type:'numeric',min:0,max:10}}, {"name":'gbye'});
 
             $scope.result1 = {};
             $scope.aaa = new AiwBootstrapParams('aas').init();
@@ -52,7 +60,7 @@
 
     <div class="clearfix"></div>
     <pre>result:{{result|json}}</pre>
-    <pre>formValidation:{{aaaForm|json}}{{aaaForm.$valid}}</pre>
+    <pre>{{aasForm}}</pre>
 
 
     <pre>result1:{{result1|json}}</pre>

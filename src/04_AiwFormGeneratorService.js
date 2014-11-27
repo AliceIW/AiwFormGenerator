@@ -1,7 +1,4 @@
-/* 
- * @author AliceIw
- */
-aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', function ($http, $templateCache) {
+aiwModule.factory('AiwFormGeneratorService', ['$http', '$templateCache', function ($http, $templateCache) {
         return {
             isEmpty: function (obj) {
                 if (obj == null)
@@ -40,8 +37,8 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                 template = template.replace(re, fieldsTemplate);
                 var re = new RegExp("(\\[\\|label\\|\\])", 'g');
                 template = template.replace(re, '{{field.label}}');
-                //var re = new RegExp("(\\[\\|validation\\|\\])", 'g');
-                //template = template.replace(re, formParams.validationHtml);
+                var re = new RegExp("(\\[\\|validation\\|\\])", 'g');
+                template = template.replace(re, formParams.validationHtml);
                 return template;
             },
             getObjectFromField: function (haystack, needle, fieldId) {
@@ -56,6 +53,13 @@ aiwModule.factory('aiwFormGeneratorService', ['$http', '$templateCache', functio
                     return haystack[idx];
                 }
                 return false;
+            },
+            typeExist:function(value,type){
+                if (value.indexOf(type) != -1) {
+                    return true;
+                }
+                return false;
             }
+
         };
     }]);

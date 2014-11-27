@@ -1,7 +1,4 @@
-/* 
- * @author AliceIw
- */
-aiwModule.factory('AiwFormParams', ['aiwFormGeneratorService', function (aiwFGService) {
+aiwModule.factory('AiwFormParams', ['AiwFormGeneratorService', function (aiwFGService) {
         var AiwFormParams = function (formName) {
             var self = this;
             self.formName = formName;
