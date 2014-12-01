@@ -18,8 +18,7 @@ aiwModule.factory('AiwValidationService', function () {
             var validation = fieldConf.validation || {};
 
             if (angular.isFunction(validation)) {
-                console.log('custom validation');
-                //$scope.formError[fieldName] = aiwValidationService.customValidation(fieldConf.validation, value);
+                return this.customValidation(fieldConf.validation, value);
                 return;
             }
             switch (validation.type) {

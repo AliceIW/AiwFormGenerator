@@ -26,15 +26,23 @@
     <script>
         var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
 
-        app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
 
+
+        app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
+            $scope.customValidation = function(val){
+                var error =  false;
+                if (val.length == 0){
+                    error= true;
+                }
+                return {error: error, message: ' ' ,class: ''};
+            }
             $scope.result = {gbye:'hji'};
             $scope.testForm = new AiwBootstrapParams('aaa').init();
             $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
                     .setView('../lib/view/aiwFormGeneratorBootstrap')
                     .addField({type: 'text', label: 'Hello', fieldName: 'hello',required:true}, {"name":'hello'})
                     .addField({type: 'text', label: 'gbye', fieldName: 'gbye',required:true,validation:{type:'numeric',min:0,max:10}}, {"name":'gbye'})
-                    .addField({type: 'text', label: 'aaaa', fieldName: 'aaa',validation:{type:'string',min:5,max:10}}, {"name":'gbye'});
+                    .addField({type: 'text', label: 'aaaa', fieldName: 'aaa',validation:$scope.customValidation }, {"name":'gbye'});
 
             $scope.result1 = {};
             $scope.aaa = new AiwBootstrapParams('aas').init();
