@@ -22,4 +22,3 @@
 <div ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['timePicker'])"  property="{{formParams.getProperties(field.fieldName)}}" timepicker update-attr></div>
 
 <div ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['rating'])" property="{{formParams.getProperties(field.fieldName)}}" rating update-attr></div>
-<span class="label {{formError[field.fieldName].class}}" ng-show="formError[field.fieldName].error || formError[field.fieldName].show " >{{formError[field.fieldName].message}}</span>

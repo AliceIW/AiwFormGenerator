@@ -5,12 +5,13 @@
         body {
             padding-top: 60px;
         }
+
         .aiw-invalid {
-            background-color: #FA787E;
+            border-color: #FA787E;
         }
-.aiw-valid
-         {
-            background-color: #78FA89;
+
+        .aiw-valid {
+            border-color: #78FA89;
         }
     </style>
     <script src="assets/angular/angular.js"></script>
@@ -27,22 +28,33 @@
         var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
 
 
-
         app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
-            $scope.customValidation = function(val){
-                var error =  false;
-                if (val.length == 0){
-                    error= true;
+            $scope.customValidation = function (val) {
+                var error = false;
+                if (val.length == 0) {
+                    error = true;
                 }
-                return {error: error, message: ' ' ,class: ''};
+                return {error: error, message: ' ', class: ''};
             }
-            $scope.result = {gbye:'hji'};
+            $scope.result = {gbye: 'hji'};
             $scope.testForm = new AiwBootstrapParams('aaa').init();
-            $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
+            $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/>{{formError|json}}</form>')
+                    .setValidationClass('alert-danger')
                     .setView('../lib/view/aiwFormGeneratorBootstrap')
-                    .addField({type: 'text', label: 'Hello', fieldName: 'hello',required:true}, {"name":'hello'})
-                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye',required:true,validation:{type:'numeric',min:0,max:10}}, {"name":'gbye'})
-                    .addField({type: 'text', label: 'aaaa', fieldName: 'aaa',validation:$scope.customValidation }, {"name":'gbye'});
+                    .addField({type: 'text', label: 'Hello', fieldName: 'hello', required: true}, {"name": 'hello'})
+                    .addField({
+                        type: 'text',
+                        label: 'gbye',
+                        fieldName: 'gbye',
+                        required: true,
+                        validation: {type: 'numeric', min: 0, max: 10}
+                    }, {"name": 'gbye'})
+                    .addField({
+                        type: 'text',
+                        label: 'aaaa',
+                        fieldName: 'aaa',
+                        validation: $scope.customValidation
+                    }, {"name": 'gbye'});
 
             $scope.result1 = {};
             $scope.aaa = new AiwBootstrapParams('aas').init();
