@@ -5,13 +5,13 @@
         body {
             padding-top: 60px;
         }
-        /*input.ng-invalid.ng-dirty {*/
-            /*background-color: #FA787E;*/
-        /*}*/
-
-        /*input.ng-valid.ng-dirty {*/
-            /*background-color: #78FA89;*/
-        /*}*/
+        .aiw-invalid {
+            background-color: #FA787E;
+        }
+.aiw-valid
+         {
+            background-color: #78FA89;
+        }
     </style>
     <script src="assets/angular/angular.js"></script>
     <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -32,8 +32,9 @@
             $scope.testForm = new AiwBootstrapParams('aaa').init();
             $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|]<br/><br/></div><br/>{{aaaForm|json}}</form>')
                     .setView('../lib/view/aiwFormGeneratorBootstrap')
-                    .addField({type: 'text', label: 'Hello', fieldName: 'hello',required:true}, {"ng-required":true,"name":'hello'})
-                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye',validation:{type:'numeric',min:0,max:10}}, {"name":'gbye'});
+                    .addField({type: 'text', label: 'Hello', fieldName: 'hello',required:true}, {"name":'hello'})
+                    .addField({type: 'text', label: 'gbye', fieldName: 'gbye',required:true,validation:{type:'numeric',min:0,max:10}}, {"name":'gbye'})
+                    .addField({type: 'text', label: 'aaaa', fieldName: 'aaa',validation:{type:'string',min:5,max:10}}, {"name":'gbye'});
 
             $scope.result1 = {};
             $scope.aaa = new AiwBootstrapParams('aas').init();

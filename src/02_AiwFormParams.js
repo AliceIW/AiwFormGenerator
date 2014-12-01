@@ -41,6 +41,7 @@ aiwModule.factory('AiwFormParams', ['AiwFormGeneratorService', function (aiwFGSe
             this.addField = function (fieldSettings, fieldsProperty, groupName) {
                 var name = groupName || 'fields';
                 fieldSettings['group'] = name;
+                fieldsProperty['class']+= ' aiwElement aiw-'+this.formName+'-'+fieldSettings.fieldName;
                 self.fields.push(fieldSettings);
                 self.properties[fieldSettings.fieldName] = fieldsProperty;
                 return this;
