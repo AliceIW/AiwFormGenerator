@@ -1,90 +1,121 @@
 <html>
-<head>
-    <link rel="stylesheet" type="text/css" href="assets/bootstrap-css-only/css/bootstrap.css">
-    <style>
-        body {
-            padding-top: 60px;
-        }
-
-        .aiw-invalid {
-            border-color: #FA787E;
-        }
-
-        .aiw-valid {
-            border-color: #78FA89;
-        }
-    </style>
-    <script src="assets/angular/angular.js"></script>
-    <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-
-    <script src="../src/01_Module.js" type="text/javascript"></script>
-    <script src="../src/02_AiwFormParams.js" type="text/javascript"></script>
-    <script src="../src/03_AiwBootstrapParams.js" type="text/javascript"></script>
-    <script src="../src/04_AiwFormGeneratorService.js" type="text/javascript"></script>
-    <script src="../src/05_AiwValidationService.js" type="text/javascript"></script>
-    <script src="../src/06_UpdateAttributesDirective.js" type="text/javascript"></script>
-    <script src="../src/07_AiwFormGeneratorDirective.js" type="text/javascript"></script>
-    <script>
-        var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
-
-
-        app.controller('testController', function ($scope, $http, AiwBootstrapParams) {
-            $scope.customValidation = function (val) {
-                var error = false;
-                if (val.length == 0) {
-                    error = true;
-                }
-                return {error: error, message: ' ', class: ''};
+    <head>
+        <link rel="stylesheet" type="text/css" href="assets/bootstrap-css-only/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 60px;
             }
-            $scope.result = {gbye: 'hji'};
-            $scope.testForm = new AiwBootstrapParams('aaa').init();
-            $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/>{{formError|json}}</form>')
-                    .setValidationClass('alert-danger')
-                    .setView('../lib/view/aiwFormGeneratorBootstrap')
-                    .addField({type: 'text', label: 'Hello', fieldName: 'hello', required: true}, {"name": 'hello'})
-                    .addField({
-                        type: 'text',
-                        label: 'gbye',
-                        fieldName: 'gbye',
-                        required: true,
-                        validation: {type: 'numeric', min: 0, max: 10}
-                    }, {"name": 'gbye'})
-                    .addField({
-                        type: 'text',
-                        label: 'aaaa',
-                        fieldName: 'aaa',
-                        validation: $scope.customValidation
-                    }, {"name": 'gbye'});
 
-            $scope.result1 = {};
-            $scope.aaa = new AiwBootstrapParams('aas').init();
-            $scope.aaa.setTemplate('TEstForm 1<form name="aasForm"><div [|loop|]>[|label|][|fields|]</div></form>')
-                    .setView('../lib/view/aiwFormGeneratorBootstrap')
-                    .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {});
-            $scope.alert = function () {
-                alert('');
+            .aiw-invalid {
+                border-color: #FA787E;
             }
-            $scope.tetet = "aaaa";
-        });</script>
-</head>
-<body ng-app="myApp">
-<div ng-controller="testController">
-    {{title}}{{$directive.tetet}}
-    hello!
-    <div ng-model="result" form-params="testForm" aiw-form-generator>adasdsad</div>
-    <!--<div ng-model="result1" form-params="aaa" aiw-form-generator>adasdsad</div>-->
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+            .aiw-valid {
+                border-color: #78FA89;
+            }
+        </style>
+        <script src="assets/angular/angular.js"></script>
+        <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
-    <div class="clearfix"></div>
-    <pre>result:{{result|json}}</pre>
-    <pre>{{aasForm}}</pre>
+        <script src="../src/01_Module.js" type="text/javascript"></script>
+        <script src="../src/02_AiwFormParams.js" type="text/javascript"></script>
+        <script src="../src/03_AiwBootstrapParams.js" type="text/javascript"></script>
+        <script src="../src/04_AiwFormGeneratorService.js" type="text/javascript"></script>
+        <script src="../src/05_AiwValidationService.js" type="text/javascript"></script>
+        <script src="../src/06_UpdateAttributesDirective.js" type="text/javascript"></script>
+        <script src="../src/07_AiwFormGeneratorDirective.js" type="text/javascript"></script>
+        <script>
+
+//            aiwModule.directive('aiwFormGenerator', function ($http, $compile) {
+//                return {
+//                    restrict: 'A',
+//                    replace:true,
+//                    transclude: true,
+////                    priority: 5,
+////                    template:'<div>[|label|][|fields|]<div ng-transclude></div></div>',
+//                    scope: {
+//                        ngModel: '=',
+//                        formParams: '='
+//                    },
+//                    link: function ($scope, element, attr, ctrl, transclude) {
+//                        var template = '';
+//                        $http.get('../example/templateTest.html').then(function (loadedTemplate) {
+//                            template = loadedTemplate.data;
+//                        }).then(function () {
+//                            $http.get('../lib/view/aiwFormGeneratorBootstrap.html').then(function (view) {
+//                                var re = new RegExp("(\\[\\|fields\\|\\])", 'g');
+//                                console.log(angular.copy(template));
+//                                template.replace(re, view.data);
+//                            });
+//                        }).then(function () {
+//                            element.html(template);
+//                            transclude($scope, function (clone) {
+//                                clone.css("border", "2px solid gold");
+//                                element.after(clone);
+//                            });
+//
+//                            $compile(element.contents())($scope);
+//                        });
+//                    }
+//                }
+//            });
+            var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
+
+            app.controller('testController', function ($scope, AiwBootstrapParams) {
+                $scope.testForm = new AiwBootstrapParams('aaa').init();
+                $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/></form>')
+                        .setValidationClass('alert-danger')
+                        .setView('../lib/view/aiwFormGeneratorBootstrap')
+                        .addField({type: 'text', label: 'Hello', fieldName: 'hello', required: true}, {"name": 'hello'})
+                        .addField({
+                            type: 'text',
+                            label: 'gbye',
+                            fieldName: 'gbye',
+                            required: true,
+                            validation: {type: 'numeric', min: 0, max: 10}
+                        }, {"name": 'gbye'})
+                        .addField({
+                            type: 'text',
+                            label: 'aaaa',
+                            fieldName: 'aaa',
+                            validation: $scope.customValidation
+                        }, {"name": 'gbye'});
+//
+//                $scope.result1 = {};
+//                $scope.aaa = new AiwBootstrapParams('aas').init();
+//                $scope.aaa.setTemplate('TEstForm 1<form name="aasForm"><div [|loop|]>[|label|][|fields|]</div></form>')
+//                        .setView('../lib/view/aiwFormGeneratorBootstrap')
+//                        .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {});
+//                $scope.alert = function () {
+//                    alert('');
+//                }
+            });
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <div ng-controller="testController">
+
+            hello!
+            <div ng-model="result" form-params="testForm" aiw-form-generator>
+                <div>
+                    adasdsad
+                    <pre>{{formError|json}}</pre>
+                    <pre>result:{{result|json}}</pre>
+                </div>
+            </div>
+            <!--<div ng-model="result1" form-params="aaa" aiw-form-generator>adasdsad</div>-->
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <div class="clearfix"></div>
 
 
-    <pre>result1:{{result1|json}}</pre>
-</div>
-</body>
+
+
+            <pre>result1:{{result1|json}}</pre>
+        </div>
+    </body>
 </html>

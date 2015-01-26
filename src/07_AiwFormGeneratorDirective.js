@@ -1,86 +1,88 @@
 aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidationService', '$compile', function (aiwFGService, aiwValidation, $compile) {
 
-    return {
-        restrict: 'A',
-        replace: true,
-        priority: 5,
-        link: function ($scope, element, attr) {
-            var $directive = $scope.$new(true);
-            var formName = $scope[attr['formParams']].formName + 'Form';
-            var validationService = new aiwValidation($scope[attr['formParams']].validationMessage, $scope[attr['formParams']].getValidationClass());
+        return {
+            restrict: 'A',
+            replace: true,
+            transclude: true,
+            priority: 5,
+            scope: {
+                ngModel: '=',
+                formParams: '='
+            },
+            link: function ($scope, element, attr, nullController, transcludeFn) {
+                var validationService = new aiwValidation($scope.formParams.validationMessage, $scope.formParams.getValidationClass());
+                
+                $scope.formError = {};
+                this.initNgModel = function () {
+                    $scope.ngModel = $scope.ngModel || {};
 
-            $directive.formParams = $scope[attr['formParams']];
-            $directive.ngModel = $scope[attr['ngModel']];
-            $directive.formError = {};
-
-            this.initNgModel = function () {
-                $directive.ngModel = $directive.ngModel || {};
-
-                angular.forEach($directive.formParams.fields, function (fieldConf) {
-                    //$scope[formName][fieldConf.fieldName] = {};
-                    if (!angular.isDefined($directive.ngModel[fieldConf.fieldName])) {
-                        if (!angular.isDefined(fieldConf.maxChoices) || fieldConf.maxChoices == 1) {
-                            $directive.ngModel[fieldConf.fieldName] = '';
-                        } else {
-                            $directive.ngModel[fieldConf.fieldName] = [];
+                    angular.forEach($scope.formParams.fields, function (fieldConf) {
+                        //$scope[formName][fieldConf.fieldName] = {};
+                        if (!angular.isDefined($scope.ngModel[fieldConf.fieldName])) {
+                            if (!angular.isDefined(fieldConf.maxChoices) || fieldConf.maxChoices == 1) {
+                                $scope.ngModel[fieldConf.fieldName] = '';
+                            } else {
+                                $scope.ngModel[fieldConf.fieldName] = [];
+                            }
                         }
+                    });
+                };
+                this.applyClasses = function (value, fieldName) {
+                    var classAttribute = 'aiw-invalid';
+                    if (value == true) {
+                        classAttribute = 'aiw-valid';
                     }
-                });
-            };
-            this.applyClasses = function (value, fieldName) {
-                var classAttribute = 'aiw-invalid';
-                if (value == true) {
-                    classAttribute = 'aiw-valid';
+                    var curElement = angular.element(element[0].querySelectorAll('.aiw-' + $scope.formParams.formName + '-' + fieldName));
+                    curElement.removeClass('aiw-valid');
+                    curElement.removeClass('aiw-invalid');
+                    curElement.addClass(classAttribute);
                 }
-                var curElement = angular.element(element[0].querySelectorAll('.aiw-' + $directive.formParams.formName + '-' + fieldName));
-                curElement.removeClass('aiw-valid');
-                curElement.removeClass('aiw-invalid');
-                curElement.addClass(classAttribute);
-            }
 
-            this.initNgModel();
+                this.initNgModel();
 
-            aiwFGService.loadFieldsTemplate($directive.formParams.getView(), function (response) {
-                var transclude = element.html();
-                return aiwFGService.replaceTagInTemplate($directive.formParams, response.data, transclude);
-            }).then(function (template) {
-                element.html(template);
-
-                $compile(element.contents())($directive);
-                $compile(element.contents())($scope);
-            });
-
-            $directive.returnType = function (type, value) {
-                return aiwFGService.typeExist(value, type);
-            }
-
-            $directive.ngModel.formIsValid = function () {
-                if (!angular.isDefined($scope[formName])) {
-                    return false;
-                }
-                return $scope[formName].$valid;
-            }
-
-            $directive.$watch('ngModel', function (newValue) {
-                angular.forEach(newValue, function (currentField, fieldName) {
-                    var valid = [true, true];
-                    var fieldConf = $directive.formParams.getField(fieldName);
-                    if (angular.isDefined(fieldConf.validation)) {
-                        var validationResult = validationService.validation(fieldName, fieldConf, currentField);
-                        $directive.formError[fieldName] = validationResult;
-                        valid[0] = !validationResult.error;
-                    }
-                    if (fieldConf.required == true || angular.isFunction(fieldConf.required)) {
-                        valid[1] = !validationService.checkRequired(fieldConf, $directive.ngModel[fieldName]);
-                    }
-                    setTimeout(function () {
-                        this.applyClasses(valid[0] && valid[1], fieldName);
-                    }, 0);
-
+                aiwFGService.loadFieldsTemplate($scope.formParams.getView(), function (response) {
+                    var transclude = element.html();
+                    return aiwFGService.replaceTagInTemplate($scope.formParams, response.data, transclude);
+                }).then(function (template) {
+                    element.html(template);
+                    transcludeFn($scope.$parent, function (clone) {
+                        element.after(clone);
+                    });
+                    $compile(element.contents())($scope);
+                    $compile(element.contents())($scope);
                 });
-            }, true);
+              
+                $scope.returnType = function (type, value) {
+                    return aiwFGService.typeExist(value, type);
+                }
 
-        }
+                $scope.ngModel.formIsValid = function () {
+                    if (!angular.isDefined($scope[formName])) {
+                        return false;
+                    }
+                    return $scope[formName].$valid;
+                }
 
-    };
-}])
+                $scope.$watch('ngModel', function (newValue) {
+                    angular.forEach(newValue, function (currentField, fieldName) {
+                        var valid = [true, true];
+                        var fieldConf = $scope.formParams.getField(fieldName);
+                        if (angular.isDefined(fieldConf.validation)) {
+                            var validationResult = validationService.validation(fieldName, fieldConf, currentField);
+                            $scope.formError[fieldName] = validationResult;
+                            valid[0] = !validationResult.error;
+                        }
+                        if (fieldConf.required == true || angular.isFunction(fieldConf.required)) {
+                            valid[1] = !validationService.checkRequired(fieldConf, $scope.ngModel[fieldName]);
+                        }
+                        setTimeout(function () {
+                            this.applyClasses(valid[0] && valid[1], fieldName);
+                        }, 0);
+
+                    });
+                }, true);
+
+            }
+
+        };
+    }])
