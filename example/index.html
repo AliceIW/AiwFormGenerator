@@ -62,7 +62,13 @@
             var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
 
             app.controller('testController', function ($scope, AiwBootstrapParams) {
+                $scope.lines = [];
+                $scope.addLine= function(){
+                    console.log('ss');
+                    $scope.lines.push(angular.copy($scope.result));
+                }
                 $scope.testForm = new AiwBootstrapParams('aaa').init();
+
                 $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/></form>')
                         .setValidationClass('alert-danger')
                         .setView('../lib/view/aiwFormGeneratorBootstrap')
@@ -79,7 +85,8 @@
                             label: 'aaaa',
                             fieldName: 'aaa',
                             validation: $scope.customValidation
-                        }, {"name": 'gbye'});
+                        }, {"name": 'gbye'})
+                        .addField({type: 'button', text: 'add'}, {"ng-click": "$ce('addLine')"});
 //
 //                $scope.result1 = {};
 //                $scope.aaa = new AiwBootstrapParams('aas').init();
@@ -97,10 +104,8 @@
 
             hello!
             <div ng-model="result" form-params="testForm" aiw-form-generator>
-                <div>
-                    adasdsad
-                    <pre>{{formError|json}}</pre>
-                    <pre>result:{{result|json}}</pre>
+                <div ng-repeat="line in lines">
+                    <pre>{{line|json}}</pre>
                 </div>
             </div>
             <!--<div ng-model="result1" form-params="aaa" aiw-form-generator>adasdsad</div>-->

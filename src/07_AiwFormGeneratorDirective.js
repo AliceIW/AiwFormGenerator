@@ -49,11 +49,14 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                         element.after(clone);
                     });
                     $compile(element.contents())($scope);
-                    $compile(element.contents())($scope);
                 });
               
                 $scope.returnType = function (type, value) {
                     return aiwFGService.typeExist(value, type);
+                }
+
+                $scope.$ce =function(fnName,params){
+                    return $scope.$parent[fnName](params);
                 }
 
                 $scope.ngModel.formIsValid = function () {
