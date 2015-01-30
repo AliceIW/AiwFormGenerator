@@ -11,14 +11,14 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
             },
             link: function ($scope, element, attr, nullController, transcludeFn) {
                 var validationService = new aiwValidation($scope.formParams.validationMessage, $scope.formParams.getValidationClass());
-                
+
                 $scope.formError = {};
                 this.initNgModel = function () {
                     $scope.ngModel = $scope.ngModel || {};
 
                     angular.forEach($scope.formParams.fields, function (fieldConf) {
                         //$scope[formName][fieldConf.fieldName] = {};
-                        if (!angular.isDefined($scope.ngModel[fieldConf.fieldName])) {
+                        if (!angular.isDefined($scope.ngModel[fieldConf.fieldName]) && fieldConf.type!='button') {
                             if (!angular.isDefined(fieldConf.maxChoices) || fieldConf.maxChoices == 1) {
                                 $scope.ngModel[fieldConf.fieldName] = '';
                             } else {
@@ -27,12 +27,14 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                         }
                     });
                 };
-                this.applyClasses = function (value, fieldName) {
+                $scope.applyClasses = function (value, fieldName) {
                     var classAttribute = 'aiw-invalid';
                     if (value == true) {
                         classAttribute = 'aiw-valid';
                     }
+                    console.log('.aiw-' + $scope.formParams.formName + '-' + fieldName);
                     var curElement = angular.element(element[0].querySelectorAll('.aiw-' + $scope.formParams.formName + '-' + fieldName));
+
                     curElement.removeClass('aiw-valid');
                     curElement.removeClass('aiw-invalid');
                     curElement.addClass(classAttribute);
@@ -50,12 +52,12 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                     });
                     $compile(element.contents())($scope);
                 });
-              
+
                 $scope.returnType = function (type, value) {
                     return aiwFGService.typeExist(value, type);
                 }
 
-                $scope.$ce =function(fnName,params){
+                $scope.$ce = function (fnName, params) {
                     return $scope.$parent[fnName](params);
                 }
 
@@ -79,7 +81,7 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                             valid[1] = !validationService.checkRequired(fieldConf, $scope.ngModel[fieldName]);
                         }
                         setTimeout(function () {
-                            this.applyClasses(valid[0] && valid[1], fieldName);
+                            $scope.applyClasses(valid[0] && valid[1], fieldName);
                         }, 0);
 
                     });

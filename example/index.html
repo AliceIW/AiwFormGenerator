@@ -25,47 +25,16 @@
         <script src="../src/06_UpdateAttributesDirective.js" type="text/javascript"></script>
         <script src="../src/07_AiwFormGeneratorDirective.js" type="text/javascript"></script>
         <script>
-
-//            aiwModule.directive('aiwFormGenerator', function ($http, $compile) {
-//                return {
-//                    restrict: 'A',
-//                    replace:true,
-//                    transclude: true,
-////                    priority: 5,
-////                    template:'<div>[|label|][|fields|]<div ng-transclude></div></div>',
-//                    scope: {
-//                        ngModel: '=',
-//                        formParams: '='
-//                    },
-//                    link: function ($scope, element, attr, ctrl, transclude) {
-//                        var template = '';
-//                        $http.get('../example/templateTest.html').then(function (loadedTemplate) {
-//                            template = loadedTemplate.data;
-//                        }).then(function () {
-//                            $http.get('../lib/view/aiwFormGeneratorBootstrap.html').then(function (view) {
-//                                var re = new RegExp("(\\[\\|fields\\|\\])", 'g');
-//                                console.log(angular.copy(template));
-//                                template.replace(re, view.data);
-//                            });
-//                        }).then(function () {
-//                            element.html(template);
-//                            transclude($scope, function (clone) {
-//                                clone.css("border", "2px solid gold");
-//                                element.after(clone);
-//                            });
-//
-//                            $compile(element.contents())($scope);
-//                        });
-//                    }
-//                }
-//            });
             var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
 
             app.controller('testController', function ($scope, AiwBootstrapParams) {
                 $scope.lines = [];
-                $scope.addLine= function(){
-                    console.log('ss');
+                $scope.lines1 = [];
+                $scope.addLine = function () {
                     $scope.lines.push(angular.copy($scope.result));
+                }
+                $scope.addLineTest = function () {
+                    $scope.lines1.push(angular.copy($scope.result1));
                 }
                 $scope.testForm = new AiwBootstrapParams('aaa').init();
 
@@ -76,26 +45,27 @@
                         .addField({
                             type: 'text',
                             label: 'gbye',
-                            fieldName: 'gbye',
+                            fieldName: 'gbye0',
                             required: true,
                             validation: {type: 'numeric', min: 0, max: 10}
-                        }, {"name": 'gbye'})
+                        }, {"name": 'gbye0'})
                         .addField({
                             type: 'text',
                             label: 'aaaa',
                             fieldName: 'aaa',
                             validation: $scope.customValidation
-                        }, {"name": 'gbye'})
-                        .addField({type: 'button', text: 'add'}, {"ng-click": "$ce('addLine')"});
-//
-//                $scope.result1 = {};
-//                $scope.aaa = new AiwBootstrapParams('aas').init();
-//                $scope.aaa.setTemplate('TEstForm 1<form name="aasForm"><div [|loop|]>[|label|][|fields|]</div></form>')
-//                        .setView('../lib/view/aiwFormGeneratorBootstrap')
-//                        .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {});
-//                $scope.alert = function () {
-//                    alert('');
-//                }
+                        }, {"name": 'aaa0'})
+                        .addField({type: 'button', fieldName: 'add', text: 'add'}, {"ng-click": "$ce('addLine')"});
+
+                $scope.result1 = {};
+                $scope.aaa = new AiwBootstrapParams('aas').init();
+                $scope.aaa.setTemplate('TEstForm 1<form name="aasForm2"><div [|loop|]>[|label|][|fields|]</div></form>')
+                        .setView('../lib/view/aiwFormGeneratorBootstrap')
+                        .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {})
+                        .addField({type: 'button', fieldName: 'add', text: 'add'}, {"ng-click": "$ce('addLineTest')"});
+                $scope.alert = function () {
+                    alert('');
+                }
             });
         </script>
     </head>
@@ -103,24 +73,18 @@
         <div ng-controller="testController">
 
             hello!
+            <div ng-model="result1" form-params="aaa" aiw-form-generator>
+                <div ng-repeat="line in lines1">
+                    <pre>{{line|json}}</pre>
+                </div>
+            </div>
             <div ng-model="result" form-params="testForm" aiw-form-generator>
                 <div ng-repeat="line in lines">
                     <pre>{{line|json}}</pre>
                 </div>
             </div>
-            <!--<div ng-model="result1" form-params="aaa" aiw-form-generator>adasdsad</div>-->
-
-            <br/>
-            <br/>
-            <br/>
-            <br/>
-
-            <div class="clearfix"></div>
 
 
-
-
-            <pre>result1:{{result1|json}}</pre>
         </div>
     </body>
 </html>
