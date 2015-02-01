@@ -4,6 +4,7 @@ aiwModule.factory('AiwFormParams', ['AiwFormGeneratorService', function (aiwFGSe
             self.formName = formName;
             self.view = 'view/aiwFormGenerator';
             self.privateTemplate = '<form name="' + formName + 'Form"><div [|loop|]><label>[|label|]</label>[|fields|]</div><br/><br/>[|buttons|]</form>';
+            self.templateIsUrl = false;
             self.fields = [];
             self.properties = {};
             self.groups = {};
@@ -34,14 +35,22 @@ aiwModule.factory('AiwFormParams', ['AiwFormGeneratorService', function (aiwFGSe
             this.getTemplate = function () {
                 return self.privateTemplate;
             };
-            this.setTemplate = function (template) {
+            this.setTemplate = function (template, isUrl) {
+                var isUrl = isUrl || false;
+                if (isUrl) {
+                    self.templateIsUrl = true;
+                }
                 self.privateTemplate = template;
                 return this;
             };
+            this.setTemplateUrl = function (templateUrl) {
+                this.setTemplate(templateUrl, true);
+                return this;
+            }
             this.addField = function (fieldSettings, fieldsProperty, groupName) {
                 var name = groupName || 'fields';
                 fieldSettings['group'] = name;
-                fieldsProperty['class']+= ' aiwElement aiw-'+this.formName+'-'+fieldSettings.fieldName;
+                fieldsProperty['class'] += ' aiwElement aiw-' + this.formName + '-' + fieldSettings.fieldName;
                 self.fields.push(fieldSettings);
                 self.properties[fieldSettings.fieldName] = fieldsProperty;
                 return this;

@@ -22,12 +22,11 @@ aiwModule.factory('AiwFormGeneratorService', ['$http', '$templateCache', functio
                 }
                 return obj1;
             },
-            replaceTagInTemplate: function (formParams, fieldsTemplate, transclude) {
+            replaceTagInTemplate: function (formParams, fieldsTemplate) {
                 var template = formParams.getTemplate();
                 var mapObj = {
                     "[|fields|]": fieldsTemplate,
-                    "[|loop|]": 'ng-switch on="field.type" ng-repeat="field in formParams.getFields()"',
-                    "[|transclude|]": transclude
+                    "[|loop|]": 'ng-switch on="field.type" ng-repeat="field in formParams.getFields()"'
                 };
                 mapObj = this.merge(mapObj, formParams.getGroups());
                 angular.forEach(mapObj, function (toReplace, Key) {
@@ -54,12 +53,11 @@ aiwModule.factory('AiwFormGeneratorService', ['$http', '$templateCache', functio
                 }
                 return false;
             },
-            typeExist:function(value,type){
+            typeExist: function (value, type) {
                 if (value.indexOf(type) != -1) {
                     return true;
                 }
                 return false;
             }
-
         };
     }]);

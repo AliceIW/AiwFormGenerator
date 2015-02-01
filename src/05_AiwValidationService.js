@@ -86,6 +86,17 @@ aiwModule.factory('AiwValidationService', function () {
                 return this.isANumber(value.length, min, max, label, this.validationMessage.string);
             }
         };
+        this.applyClasses = function (value, fieldName, formName, element) {
+            var classAttribute = 'aiw-invalid';
+            if (value == true) {
+                classAttribute = 'aiw-valid';
+            }
+            var curElement = angular.element(element[0].querySelectorAll('.aiw-' + formName + '-' + fieldName));
+
+            curElement.removeClass('aiw-valid');
+            curElement.removeClass('aiw-invalid');
+            curElement.addClass(classAttribute);
+        }
 
     };
 

@@ -41,6 +41,7 @@
                 $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/></form>')
                         .setValidationClass('alert-danger')
                         .setView('../lib/view/aiwFormGeneratorBootstrap')
+                        .setTemplate('../example/templateTest',true)
                         .addField({type: 'text', label: 'Hello', fieldName: 'hello', required: true}, {"name": 'hello'})
                         .addField({
                             type: 'text',
@@ -73,11 +74,11 @@
         <div ng-controller="testController">
 
             hello!
-            <div ng-model="result1" form-params="aaa" aiw-form-generator>
+<!--            <div ng-model="result1" form-params="aaa" aiw-form-generator>
                 <div ng-repeat="line in lines1">
                     <pre>{{line|json}}</pre>
                 </div>
-            </div>
+            </div>-->
             <div ng-model="result" form-params="testForm" aiw-form-generator>
                 <div ng-repeat="line in lines">
                     <pre>{{line|json}}</pre>

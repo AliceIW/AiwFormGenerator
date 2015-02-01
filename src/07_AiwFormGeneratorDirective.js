@@ -15,10 +15,13 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                 $scope.formError = {};
                 this.initNgModel = function () {
                     $scope.ngModel = $scope.ngModel || {};
+                    if (angular.isDefined($scope.ngModel['formIsValid'])) {
+                        $scope.ngModel = this.injectFormIsValid($scope.ngModel);
+                    }
 
                     angular.forEach($scope.formParams.fields, function (fieldConf) {
                         //$scope[formName][fieldConf.fieldName] = {};
-                        if (!angular.isDefined($scope.ngModel[fieldConf.fieldName]) && fieldConf.type!='button') {
+                        if (!angular.isDefined($scope.ngModel[fieldConf.fieldName]) && fieldConf.type != 'button') {
                             if (!angular.isDefined(fieldConf.maxChoices) || fieldConf.maxChoices == 1) {
                                 $scope.ngModel[fieldConf.fieldName] = '';
                             } else {
@@ -28,23 +31,22 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                     });
                 };
                 $scope.applyClasses = function (value, fieldName) {
-                    var classAttribute = 'aiw-invalid';
-                    if (value == true) {
-                        classAttribute = 'aiw-valid';
-                    }
-                    console.log('.aiw-' + $scope.formParams.formName + '-' + fieldName);
-                    var curElement = angular.element(element[0].querySelectorAll('.aiw-' + $scope.formParams.formName + '-' + fieldName));
-
-                    curElement.removeClass('aiw-valid');
-                    curElement.removeClass('aiw-invalid');
-                    curElement.addClass(classAttribute);
+                    validationService.applyClasses(value, fieldName, $scope.formParams.formName, element);
                 }
 
                 this.initNgModel();
 
                 aiwFGService.loadFieldsTemplate($scope.formParams.getView(), function (response) {
-                    var transclude = element.html();
-                    return aiwFGService.replaceTagInTemplate($scope.formParams, response.data, transclude);
+                    var view = response.data;
+                    if ($scope.formParams.templateIsUrl) {
+                        return aiwFGService.loadFieldsTemplate($scope.formParams.getTemplate(), function (response) {
+                            $scope.formParams.setTemplate(response.data);
+                            return aiwFGService.replaceTagInTemplate($scope.formParams, view);
+                        });
+                    } else {
+                        return aiwFGService.replaceTagInTemplate($scope.formParams, view);
+                    }
+
                 }).then(function (template) {
                     element.html(template);
                     transcludeFn($scope.$parent, function (clone) {
@@ -60,12 +62,14 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
                 $scope.$ce = function (fnName, params) {
                     return $scope.$parent[fnName](params);
                 }
-
-                $scope.ngModel.formIsValid = function () {
-                    if (!angular.isDefined($scope[formName])) {
-                        return false;
+                this.injectFormIsValid = function (ngModel) {
+                    ngModel['formIsValid'] = function () {
+                        if (!angular.isDefined($scope[formName])) {
+                            return false;
+                        }
+                        return $scope[formName].$valid;
                     }
-                    return $scope[formName].$valid;
+                    return ngModel;
                 }
 
                 $scope.$watch('ngModel', function (newValue) {
@@ -86,7 +90,6 @@ aiwModule.directive('aiwFormGenerator', ['AiwFormGeneratorService', 'AiwValidati
 
                     });
                 }, true);
-
             }
 
         };
