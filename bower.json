@@ -1,0 +1,10 @@
+{
+    "name": "AiwFormGenerator",
+    "version": "0.0.1",
+    "dependencies":{
+        "bootstrap-css-only" :"latest",
+        "angular-bootstrap" :"latest",
+        "angular-mocks":"latest"
+    }
+}
+

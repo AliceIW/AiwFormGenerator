@@ -1,0 +1,24 @@
+<input  type="{{field.type}}" ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['text', 'email', 'hidden', 'file', 'date', 'color', 'datetime', 'number',
+            'password', 'range', 'tel', 'time', 'url', 'reset'])" property="{{formParams.getProperties(field.fieldName)}}" update-attr/>
+
+<select ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['select'])" property="{{formParams.getProperties(field.fieldName)}}" update-attr ><option value="" >Select {{field.label}}</option></select>
+
+<button ng-if="returnType(field.type, ['button'])" property="{{formParams.getProperties(field.fieldName)}}" update-attr>{{field.text}}</button>
+
+<textarea  ng-if="returnType(field.type, ['textarea'])" property="{{formParams.getProperties(field.fieldName)}}" ng-model="ngModel[field.fieldName]" update-attr></textarea>
+
+<div ng-if="returnType(field.type, ['checkbox'])">
+    <div ng-repeat="single in formParams.getSource(field.source)" >
+        <input type="{{field.type}}"  ng-model="singleCheckbox" ng-true-value="{{single.value}}" property="{{formParams.getProperties(field.fieldName)}}" update-attr/> {{single.label}}
+    </div>
+</div>
+
+<div ng-if="returnType(field.type, ['radio'])">
+    <div ng-repeat="single in formParams.getSource(field.source)" >
+        <input type="radio"  ng-model="ngModel[field.fieldName]"  ng-value="single.value" property="{{formParams.getProperties(field.fieldName)}}" update-attr/> {{single.label}}
+    </div>
+</div>
+
+<div ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['timePicker'])"  property="{{formParams.getProperties(field.fieldName)}}" timepicker update-attr></div>
+
+<div ng-model="ngModel[field.fieldName]" ng-if="returnType(field.type, ['rating'])" property="{{formParams.getProperties(field.fieldName)}}" rating update-attr></div>

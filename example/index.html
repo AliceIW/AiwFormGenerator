@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="assets/bootstrap-css-only/css/bootstrap.css">
+        <style>
+            body {
+                padding-top: 60px;
+            }
+
+            .aiw-invalid {
+                border-color: #FA787E;
+            }
+
+            .aiw-valid {
+                border-color: #78FA89;
+            }
+        </style>
+        <script src="assets/angular/angular.js"></script>
+        <script src="assets/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+        <script src="../src/01_Module.js" type="text/javascript"></script>
+        <script src="../src/02_AiwFormParams.js" type="text/javascript"></script>
+        <script src="../src/03_AiwBootstrapParams.js" type="text/javascript"></script>
+        <script src="../src/04_AiwFormGeneratorService.js" type="text/javascript"></script>
+        <script src="../src/05_AiwValidationService.js" type="text/javascript"></script>
+        <script src="../src/06_UpdateAttributesDirective.js" type="text/javascript"></script>
+        <script src="../src/07_AiwFormGeneratorDirective.js" type="text/javascript"></script>
+        <script>
+            var app = angular.module('myApp', ['ui.bootstrap', 'AiwFormGeneratorModule'])
+
+            app.controller('testController', function ($scope, AiwBootstrapParams) {
+                $scope.lines = [];
+                $scope.lines1 = [];
+                $scope.addLine = function () {
+                    $scope.lines.push(angular.copy($scope.result));
+                }
+                $scope.addLineTest = function () {
+                    $scope.lines1.push(angular.copy($scope.result1));
+                }
+                $scope.testForm = new AiwBootstrapParams('aaa').init();
+
+                $scope.testForm.setTemplate('TEstForm<form  name="aaaForm"><div [|loop|]>[|label|]---[|fields|][|validation|]<br/><br/></div><br/></form>')
+                        .setValidationClass('alert-danger')
+                        .setView('../lib/view/aiwFormGeneratorBootstrap')
+                        .addField({type: 'text', label: 'Hello', fieldName: 'hello', required: true}, {"name": 'hello'})
+                        .addField({
+                            type: 'text',
+                            label: 'gbye',
+                            fieldName: 'gbye0',
+                            required: true,
+                            validation: {type: 'numeric', min: 0, max: 10}
+                        }, {"name": 'gbye0'})
+                        .addField({
+                            type: 'text',
+                            label: 'aaaa',
+                            fieldName: 'aaa',
+                            validation: $scope.customValidation
+                        }, {"name": 'aaa0'})
+                        .addField({type: 'button', fieldName: 'add', text: 'add'}, {"ng-click": "$ce('addLine')"});
+
+                $scope.result1 = {};
+                $scope.aaa = new AiwBootstrapParams('aas').init();
+                $scope.aaa.setTemplate('TEstForm 1<form name="aasForm2"><div [|loop|]>[|label|][|fields|]</div></form>')
+                        .setView('../lib/view/aiwFormGeneratorBootstrap')
+                        .addField({type: 'text', label: 'Bye', fieldName: 'Bye'}, {})
+                        .addField({type: 'button', fieldName: 'add', text: 'add'}, {"ng-click": "$ce('addLineTest')"});
+                $scope.alert = function () {
+                    alert('');
+                }
+            });
+        </script>
+    </head>
+    <body ng-app="myApp">
+        <div ng-controller="testController">
+
+            hello!
+            <div ng-model="result1" form-params="aaa" aiw-form-generator>
+                <div ng-repeat="line in lines1">
+                    <pre>{{line|json}}</pre>
+                </div>
+            </div>
+            <div ng-model="result" form-params="testForm" aiw-form-generator>
+                <div ng-repeat="line in lines">
+                    <pre>{{line|json}}</pre>
+                </div>
+            </div>
+
+
+        </div>
+    </body>
+</html>

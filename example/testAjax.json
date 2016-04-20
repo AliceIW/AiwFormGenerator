@@ -1,0 +1,7 @@
+{
+    "autocomplete":[
+        {"label":"United Kindom", "value":1},
+        {"label":"Spain", "value":2},
+        {"label":"France","value":3}
+    ]
+}

@@ -1,0 +1,8 @@
+bower.json~
+composer.phar
+vendor
+composer.json~
+composer.lock
+/lib/aiwFormGenerator.js
+lib/aiwFormGenerator-1.0.0.js
+.idea/
